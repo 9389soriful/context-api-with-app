@@ -1,26 +1,33 @@
-import React, { useState } from "react";
-import { Link } from "react-router";
-import app from "../auth/firebase";
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import React, { useContext, useState } from "react";
+import { Link, Navigate } from "react-router";
 import { IoEyeSharp } from "react-icons/io5";
 import { FaEyeSlash } from "react-icons/fa";
+import { AuthContext } from "../contexts/AuthContext";
 
 const SignUp = () => {
+  const { createUser } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(false);
+  // this is for observer the form
+  const { user } = useContext(AuthContext);
+  console.log(user);
+
+  // this function for handle show btn
   const handleShowBtn = (e) => {
     e.preventDefault();
     setShowPassword(!showPassword);
   };
+
+  // this function for handle sign up
   const handleSignUp = (e) => {
     e.preventDefault();
-    const auth = getAuth(app);
+
     const email = e.target.email.value;
     const password = e.target.password.value;
     console.log(email, password);
 
-    createUserWithEmailAndPassword(auth, email, password)
+    createUser(email, password)
       .then((result) => {
         console.log(result.user);
         setSuccessMessage("User Created Successfully");
@@ -68,7 +75,8 @@ const SignUp = () => {
             <button className="btn btn-neutral mt-4">SignUp</button>
             {error && <span className="text-red-500">{error}</span>}
             {successMessage && (
-              <span className="text-green-500">{successMessage}</span>
+              // <span className="text-green-500">{successMessage}</span>
+              <Navigate to="/login" />
             )}
             <div className="divider">OR</div>
             <span className="text-center font-mono text-sm">

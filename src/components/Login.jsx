@@ -1,11 +1,13 @@
-import React from "react";
-import { Link } from "react-router";
+import React, { useContext } from "react";
+import { Link, Navigate } from "react-router";
 import { IoEyeSharp } from "react-icons/io5";
 import { FaEyeSlash } from "react-icons/fa";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import app from "../auth/firebase";
+import { AuthContext } from "../contexts/AuthContext";
 const Login = () => {
+  const { loginUser } = useContext(AuthContext);
   const [showPassword, setShowPassword] = React.useState(false);
+  const [error, setError] = React.useState(null);
+  const [successMessage, setSuccessMessage] = React.useState(null);
   //   this function for handle show button
   const handleShowBtn = (e) => {
     e.preventDefault();
@@ -13,13 +15,19 @@ const Login = () => {
   };
   //   this function for handle login
   const handleLogin = (e) => {
-    const auth = getAuth(app);
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
-    signInWithEmailAndPassword(auth, email, password).then((result) => {
-      console.log(result.user);
-    });
+    loginUser(email, password)
+      .then((result) => {
+        console.log(result.user);
+        setSuccessMessage("Login Successfully");
+        setError(null);
+      })
+      .catch((error) => {
+        setError(error.message);
+        setSuccessMessage(null);
+      });
   };
   return (
     <div className="min-h-[90vh] flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -53,6 +61,11 @@ const Login = () => {
               <a className="link link-hover">Forgot password?</a>
             </div>
             <button className="btn btn-neutral mt-4">Login</button>
+            {error && <span className="text-red-500">{error}</span>}
+            {successMessage && (
+              // <span className="text-green-500">{successMessage}</span>
+              <Navigate to="/dashboard" />
+            )}
             <div className="divider">OR</div>
             <span className="text-center font-mono text-sm">
               you have SignUp..?{" "}
