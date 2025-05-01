@@ -11,9 +11,21 @@ import { useEffect, useState } from "react";
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const createUser = (email, password) => {
-    setLoading(false);
-    return createUserWithEmailAndPassword(auth, email, password);
+  const createUser = async (email, password) => {
+    setLoading(true);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+      return userCredential;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
   const loginUser = (email, password) => {
     setLoading(false);

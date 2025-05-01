@@ -38,6 +38,17 @@ const Header = () => {
                   </span>
                 )}
               </NavLink>
+              <NavLink to="/profile">
+                {({ isActive }) => (
+                  <span
+                    className={
+                      isActive ? "border-b-2 border-primary text-primary" : ""
+                    }
+                  >
+                    Profile
+                  </span>
+                )}
+              </NavLink>
               <p>Welcome, {user.email}</p>
               <button onClick={SignOut} className="btn btn-primary">
                 SignOut
